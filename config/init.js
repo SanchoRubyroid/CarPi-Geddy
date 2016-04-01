@@ -1,4 +1,5 @@
 var init = function(cb) {
+
   // Add uncaught-exception handler in prod-like environments
   if (geddy.config.environment != 'development') {
     process.addListener('uncaughtException', function (err) {
@@ -13,6 +14,15 @@ var init = function(cb) {
     });
   }
   cb();
+
+  geddy.on('started', function() {
+    geddy.io.sockets.on('connection', function(socket) {
+      socket.emit('hello', {message: "world"});
+      socket.on('message', function(message) {
+        geddy.log.notice(message);
+      });
+    });
+  })
 };
 
 exports.init = init;

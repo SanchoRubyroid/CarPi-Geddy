@@ -15,8 +15,26 @@
  * limitations under the License.
  *
 */
+var redis = require("redis")
 
 var Main = function () {
+  redis_cli = redis.createClient();
+
+  redis_cli.on("error", function (err) {
+    geddy.log.error("Error " + err);
+  });
+  redis_cli.set("string key", "string val", redis.print);
+  redis_cli.hset("hash key", "hashtest 1", "some value", redis.print);
+  redis_cli.hset(["hash key", "hashtest 2", "some other value"], redis.print);
+  redis_cli.hkeys("hash key", function (err, replies) {
+    geddy.log.notice(replies.length + " replies:");
+    replies.forEach(function (reply, i) {
+        geddy.log.notice("    " + i + ": " + reply);
+    });
+    redis_cli.quit();
+  });
+
+
   this.index = function (req, resp, params) {
     this.respond({params: params}, {
       format: 'html'
@@ -26,5 +44,3 @@ var Main = function () {
 };
 
 exports.Main = Main;
-
-
