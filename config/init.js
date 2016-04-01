@@ -17,25 +17,24 @@ var init = function(cb) {
   }
   cb();
 
-  geddy.on('initialized', function() {
+  geddy.on('started', function() {
     // redis client setup
     geddy.redis_cli = redis.createClient({
       password: geddy.config.redis_pwd,
       timeout: 0});
 
-    geddy.redis_cli.on("error", function (err) {
-      geddy.log.error("Error " + err);
-    });
-  })
+      geddy.redis_cli.on("error", function (err) {
+        geddy.log.error("Error " + err);
+      });
 
-  geddy.on('started', function() {
-    // sockets client setup
-    // geddy.io.sockets.on('connection', function() {
-    //   socket.emit('hello', {message: "world"});
-    //   socket.on('message', function(message) {
-    //     geddy.log.notice(message);
-    //   });
-    // });
+
+    geddy.io.sockets.on('connection', function(socket) {
+      setInterval(function(){
+        geddy.redis_cli.keys('car*', function(err, reply){
+          socket.emit('cars_list', reply);
+        })
+      }, 1000);
+    });
 
     geddy.io.sockets.on('online', function(car_name) {
       geddy.redis_cli.setex('car'+car_name, 2, '')
