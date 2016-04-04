@@ -1,14 +1,21 @@
 <!-- Lets talk about geddy -->
-<div class="hero-unit geddy-welcome-box">
-  <h1>Hello, CarPi!</h1>
-  <p>You've created a Geddy app and your server is running. If you already know what you're doing, feel free to jump into your app logic, if not...</p>
-  <p><%- linkTo('Lets get you started »', 'http://geddyjs.org/tutorial.html', {class: 'btn btn-primary btn-large'}) %></p>
-</div>
+<div id="carpi-list-container"></div>
+
+<%- scriptLink('elm/root_module/elm.js', {type:'text/javascript'}) %>
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
+  var container = document.getElementById('carpi-list-container');
+  var elmApp = Elm.embed(Elm.CarPiList, container, { cars: []})
+
   var socket = io.connect('http://localhost:4000');
-  socket.on('cars_list', function (data) {
-    console.log(data);
+  socket.on('cars-list', function (carsList) {
+    elmApp.ports.cars.send(carsList)
   });
+  // 
+  // socket.on('car-status', function (name, status) {
+  //   console.log(name + ':' + status)
+  // });
+
+
 </script>

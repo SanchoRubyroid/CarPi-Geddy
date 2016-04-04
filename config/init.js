@@ -30,8 +30,14 @@ var init = function(cb) {
 
     geddy.io.sockets.on('connection', function(socket) {
       setInterval(function(){
-        geddy.redis_cli.keys('car*', function(err, reply){
-          socket.emit('cars_list', reply);
+        geddy.redis_cli.keys('car*', function(err, carNames){
+          // carNames.forEach(function (name){
+          //   geddy.redis_cli.get(name, function(err, status){
+          //     socket.emit('car-status', name, status);
+          //   })
+          // })
+
+          socket.emit('cars-list', carNames);
         })
       }, 1000);
     });
