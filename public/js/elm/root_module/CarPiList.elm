@@ -3,6 +3,7 @@ module CarPiList where
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
+import Graphics.Element exposing(show)
 
 -- MODEL
 
@@ -18,15 +19,24 @@ initialModel =
 
 -- UPDATE
 
-type Action = NoOp | RefreshCarsList (List String)
+type Action = NoOp | AddCar String | RemoveCar String
 
 update : Action -> Model -> Model
 update action model =
   case action of
     NoOp ->
       model
-    RefreshCarsList newCarsList ->
-      { model | cars = newCarsList }
+    AddCar newCar ->
+      let
+        updatedCars =
+          if List.member newCar model.cars then model.cars else newCar :: model.cars
+      in
+        { model | cars = updatedCars }
+    RemoveCar oldCar ->
+      let
+        updatedCars = List.filter (\v -> v /= oldCar) model.cars
+      in
+        { model | cars = updatedCars }
 
 -- VIEW
 
@@ -56,7 +66,8 @@ carsList cars =
 
 -- PORTS
 
-port cars : Signal (List String)
+port newCar : Signal String
+port oldCar : Signal String
 
 -- SIGNALS
 
@@ -67,7 +78,10 @@ inbox =
 
 actions : Signal Action
 actions =
-  Signal.merge inbox.signal (Signal.map RefreshCarsList cars)
+  Signal.mergeMany [
+    inbox.signal,
+    (Signal.map AddCar newCar),
+    (Signal.map RemoveCar oldCar) ]
 
 
 model : Signal Model

@@ -6,16 +6,12 @@
 <script src="/socket.io/socket.io.js"></script>
 <script>
   var container = document.getElementById('carpi-list-container');
-  var elmApp = Elm.embed(Elm.CarPiList, container, { cars: []})
+  var elmApp = Elm.embed(Elm.CarPiList, container, { newCar: 'none', oldCar: 'noneo' })
 
   var socket = io.connect('http://localhost:4000');
-  socket.on('cars-list', function (carsList) {
-    elmApp.ports.cars.send(carsList)
+  socket.on('car-action', function (eventName, carName) {
+    console.log(eventName+carName)
+    if(eventName == 'set') elmApp.ports.newCar.send(carName);
+    else if (eventName == 'expired') elmApp.ports.oldCar.send(carName);
   });
-  // 
-  // socket.on('car-status', function (name, status) {
-  //   console.log(name + ':' + status)
-  // });
-
-
 </script>

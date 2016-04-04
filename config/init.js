@@ -23,29 +23,26 @@ var init = function(cb) {
       password: geddy.config.redis_pwd,
       timeout: 0});
 
-      geddy.redis_cli.on("error", function (err) {
-        geddy.log.error("Error " + err);
-      });
-
+    geddy.redis_cli.on("error", function (err) {
+      geddy.log.error("Error " + err);
+    });
 
     geddy.io.sockets.on('connection', function(socket) {
-      setInterval(function(){
-        geddy.redis_cli.keys('car*', function(err, carNames){
-          // carNames.forEach(function (name){
-          //   geddy.redis_cli.get(name, function(err, status){
-          //     socket.emit('car-status', name, status);
-          //   })
-          // })
 
-          socket.emit('cars-list', carNames);
-        })
-      }, 1000);
-    });
+      var sub_client = geddy.redis_cli.duplicate();
 
-    geddy.io.sockets.on('online', function(car_name) {
-      geddy.redis_cli.setex('car'+car_name, 2, '')
+      sub_client.on("message", function (channel, key) {
+        if(key.substring(3,-1) == 'car') {
+          var eventName = channel.replace('__keyevent@0__:', '');
+          var carName = key.substring(3)
+          socket.emit('car-action', eventName, carName);
+        }
+      });
+
+      sub_client.subscribe('__keyevent@0__:expired');
+      sub_client.subscribe('__keyevent@0__:set');
     });
-  })
+  });
 };
 
 exports.init = init;
