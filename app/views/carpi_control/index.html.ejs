@@ -1,1 +1,9 @@
 <h1>CarpiControl renderd</h1>
+<div id='carpi-control-container' style="height:100px"></div>
+
+<%- scriptLink('elm/control_module/elm.js', {type:'text/javascript'}) %>
+
+<script>
+  var container = document.getElementById('carpi-control-container');
+  var elmApp = Elm.embed(Elm.CarPi, container)
+</script>
