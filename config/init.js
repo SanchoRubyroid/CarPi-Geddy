@@ -27,10 +27,9 @@ var init = function(cb) {
       geddy.log.error("Error " + err);
     });
 
+    var sub_client = geddy.redis_cli.duplicate();
+
     geddy.io.sockets.on('connection', function(socket) {
-
-      var sub_client = geddy.redis_cli.duplicate();
-
       sub_client.on("message", function (channel, key) {
         if(key.substring(3,-1) == 'car') {
           var eventName = channel.replace('__keyevent@0__:', '');

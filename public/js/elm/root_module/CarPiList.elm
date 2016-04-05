@@ -3,19 +3,16 @@ module CarPiList where
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import Graphics.Element exposing(show)
 
 -- MODEL
 
 type alias Model =
-  { cars : List String
-  }
+  { cars : List String }
 
 
 initialModel : Model
 initialModel =
-  { cars = []
-  }
+  { cars = [] }
 
 -- UPDATE
 

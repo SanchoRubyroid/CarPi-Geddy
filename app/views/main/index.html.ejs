@@ -10,7 +10,6 @@
 
   var socket = io.connect('http://localhost:4000');
   socket.on('car-action', function (eventName, carName) {
-    console.log(eventName+carName)
     if(eventName == 'set') elmApp.ports.newCar.send(carName);
     else if (eventName == 'expired') elmApp.ports.oldCar.send(carName);
   });
