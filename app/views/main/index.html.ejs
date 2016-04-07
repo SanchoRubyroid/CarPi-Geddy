@@ -6,7 +6,7 @@
 <script src="/socket.io/socket.io.js"></script>
 <script>
   var container = document.getElementById('carpi-list-container');
-  var elmApp = Elm.embed(Elm.CarPiList, container, { newCar: 'none', oldCar: 'noneo' })
+  var elmApp = Elm.embed(Elm.CarPiList, container, { newCar: '', oldCar: '' })
 
   var socket = io.connect('http://localhost:4000');
   socket.on('car-action', function (eventName, carName) {

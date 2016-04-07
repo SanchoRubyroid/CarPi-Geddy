@@ -26,21 +26,6 @@ var init = function(cb) {
     geddy.redis_cli.on("error", function (err) {
       geddy.log.error("Error " + err);
     });
-
-    var sub_client = geddy.redis_cli.duplicate();
-
-    geddy.io.sockets.on('connection', function(socket) {
-      sub_client.on("message", function (channel, key) {
-        if(key.substring(3,-1) == 'car') {
-          var eventName = channel.replace('__keyevent@0__:', '');
-          var carName = key.substring(3)
-          socket.emit('car-action', eventName, carName);
-        }
-      });
-
-      sub_client.subscribe('__keyevent@0__:expired');
-      sub_client.subscribe('__keyevent@0__:set');
-    });
   });
 };
 
