@@ -1,9 +1,38 @@
-<h1>CarpiControl renderd</h1>
+<h1>CarpiControl</h1>
 <div id='carpi-control-container' style="height:100px"></div>
+<div id="chart-container" style="width: 400px; height: 120px;"></div>
 
 <%- scriptLink('elm/control_module/elm.js', {type:'text/javascript'}) %>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
-<script>
+<script type="text/javascript">
   var container = document.getElementById('carpi-control-container');
   var elmApp = Elm.embed(Elm.CarPi, container)
+
+  google.charts.load('current', {'packages':['gauge']});
+  google.charts.setOnLoadCallback(drawChart);
+
+  function drawChart() {
+    var data = google.visualization.arrayToDataTable([
+      ['Label', 'Value'],
+      ['Torque', 0]
+    ]);
+
+    var options = {
+      width: 400, height: 120,
+      redFrom: 90, redTo: 100,
+      yellowFrom:75, yellowTo: 90,
+      minorTicks: 5,
+      animation : {
+        duration: 0
+      }
+    };
+
+    var chart = new google.visualization.Gauge(document.getElementById('chart-container'));
+
+    elmApp.ports.torqueLevel.subscribe(function(torqueLevel){
+      data.setValue(0, 1, torqueLevel);
+      chart.draw(data, options);
+    })
+  }
 </script>
