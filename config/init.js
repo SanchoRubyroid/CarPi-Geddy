@@ -20,7 +20,9 @@ var init = function(cb) {
   geddy.on('started', function() {
     // redis client setup
     geddy.redis_cli = redis.createClient({
-      password: geddy.config.redis_pwd,
+      password: geddy.config.redis_password,
+      host: geddy.config.redis_host,
+      port: geddy.config.redis_port,
       timeout: 0});
 
     geddy.redis_cli.on("error", function (err) {

@@ -16,24 +16,15 @@ initialModel =
 
 -- UPDATE
 
-type Action = NoOp | AddCar String | RemoveCar String
+type Action = NoOp | SetCarsList (List String)
 
 update : Action -> Model -> Model
 update action model =
   case action of
     NoOp ->
       model
-    AddCar newCar ->
-      let
-        updatedCars =
-          if List.member newCar model.cars then model.cars else newCar :: model.cars
-      in
-        { model | cars = updatedCars }
-    RemoveCar oldCar ->
-      let
-        updatedCars = List.filter (\v -> v /= oldCar) model.cars
-      in
-        { model | cars = updatedCars }
+    SetCarsList newCarsList ->
+      { model | cars = newCarsList }
 
 -- VIEW
 
@@ -55,7 +46,8 @@ carsList : List String -> Html
 carsList cars =
   let
     carItem car =
-      li [ class "list-group-item" ] [ text car ]
+      li [ class "list-group-item" ]
+        [ a [ href ("/control/" ++ car) ] [ text car ] ]
     carItems =
       List.map carItem cars
   in
@@ -63,8 +55,7 @@ carsList cars =
 
 -- PORTS
 
-port newCar : Signal String
-port oldCar : Signal String
+port vehicles : Signal (List String)
 
 -- SIGNALS
 
@@ -75,10 +66,7 @@ inbox =
 
 actions : Signal Action
 actions =
-  Signal.mergeMany [
-    inbox.signal,
-    (Signal.map AddCar newCar),
-    (Signal.map RemoveCar oldCar) ]
+  Signal.merge inbox.signal (Signal.map SetCarsList vehicles)
 
 
 model : Signal Model

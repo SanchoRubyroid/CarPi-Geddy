@@ -16,21 +16,22 @@
  *
 */
 
+var redis_utils = require('../../lib/redis-utils.js');
 
 var Main = function () {
   this.index = function (req, resp, params) {
     var sub_client = geddy.redis_cli.duplicate();
 
     geddy.io.sockets.on('connection', function(socket) {
-      sub_client.on("message", function (channel, key) {
-        if(key.substring(3,-1) == 'car') {
-          var eventName = channel.replace('__keyevent@0__:', '');
-          var carName = key.substring(3)
-          socket.emit('car-action', eventName, carName);
-        }
-      });
+      redis_utils.emitCarsList(socket);
 
-      sub_client.subscribe('__keyevent@0__:expired');      
+      setInterval(function(){
+        redis_utils.emitCarsList(socket);
+      }, 2000);
+
+      sub_client.on("message", function (channel, key) {
+        if(key == 'car-online') redis_utils.emitCarsList(socket);
+      });
       sub_client.subscribe('__keyevent@0__:set');
     });
 

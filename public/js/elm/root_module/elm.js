@@ -10301,18 +10301,19 @@ Elm.CarPiList.make = function (_elm) {
    $Result = Elm.Result.make(_elm),
    $Signal = Elm.Signal.make(_elm);
    var _op = {};
-   var oldCar = Elm.Native.Port.make(_elm).inboundSignal("oldCar",
-   "String",
+   var vehicles = Elm.Native.Port.make(_elm).inboundSignal("vehicles",
+   "List String",
    function (v) {
-      return typeof v === "string" || typeof v === "object" && v instanceof String ? v : _U.badPort("a string",v);
-   });
-   var newCar = Elm.Native.Port.make(_elm).inboundSignal("newCar",
-   "String",
-   function (v) {
-      return typeof v === "string" || typeof v === "object" && v instanceof String ? v : _U.badPort("a string",v);
+      return typeof v === "object" && v instanceof Array ? Elm.Native.List.make(_elm).fromArray(v.map(function (v) {
+         return typeof v === "string" || typeof v === "object" && v instanceof String ? v : _U.badPort("a string",v);
+      })) : _U.badPort("an array",v);
    });
    var carsList = function (cars) {
-      var carItem = function (car) {    return A2($Html.li,_U.list([$Html$Attributes.$class("list-group-item")]),_U.list([$Html.text(car)]));};
+      var carItem = function (car) {
+         return A2($Html.li,
+         _U.list([$Html$Attributes.$class("list-group-item")]),
+         _U.list([A2($Html.a,_U.list([$Html$Attributes.href(A2($Basics._op["++"],"/control/",car))]),_U.list([$Html.text(car)]))]));
+      };
       var carItems = A2($List.map,carItem,cars);
       return A2($Html.ul,_U.list([$Html$Attributes.$class("list-group")]),carItems);
    };
@@ -10326,19 +10327,16 @@ Elm.CarPiList.make = function (_elm) {
    });
    var update = F2(function (action,model) {
       var _p0 = action;
-      switch (_p0.ctor)
-      {case "NoOp": return model;
-         case "AddCar": var _p1 = _p0._0;
-           var updatedCars = A2($List.member,_p1,model.cars) ? model.cars : A2($List._op["::"],_p1,model.cars);
-           return _U.update(model,{cars: updatedCars});
-         default: var updatedCars = A2($List.filter,function (v) {    return !_U.eq(v,_p0._0);},model.cars);
-           return _U.update(model,{cars: updatedCars});}
+      if (_p0.ctor === "NoOp") {
+            return model;
+         } else {
+            return _U.update(model,{cars: _p0._0});
+         }
    });
-   var RemoveCar = function (a) {    return {ctor: "RemoveCar",_0: a};};
-   var AddCar = function (a) {    return {ctor: "AddCar",_0: a};};
+   var SetCarsList = function (a) {    return {ctor: "SetCarsList",_0: a};};
    var NoOp = {ctor: "NoOp"};
    var inbox = $Signal.mailbox(NoOp);
-   var actions = $Signal.mergeMany(_U.list([inbox.signal,A2($Signal.map,AddCar,newCar),A2($Signal.map,RemoveCar,oldCar)]));
+   var actions = A2($Signal.merge,inbox.signal,A2($Signal.map,SetCarsList,vehicles));
    var initialModel = {cars: _U.list([])};
    var model = A3($Signal.foldp,update,initialModel,actions);
    var main = A2($Signal.map,view(inbox.address),model);
@@ -10347,8 +10345,7 @@ Elm.CarPiList.make = function (_elm) {
                                   ,Model: Model
                                   ,initialModel: initialModel
                                   ,NoOp: NoOp
-                                  ,AddCar: AddCar
-                                  ,RemoveCar: RemoveCar
+                                  ,SetCarsList: SetCarsList
                                   ,update: update
                                   ,view: view
                                   ,carsList: carsList
