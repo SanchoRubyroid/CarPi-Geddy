@@ -1,21 +1,21 @@
 <%= partial('layout_header'); %>
 
-<nav class="navbar navbar-default">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <%- linkTo('CarPi Web', mainsPath, {class: 'navbar-brand'}) %>
-    </div>
+<div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer">
+  <div class="mdl-layout__drawer"></div>
 
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      <ul class="nav navbar-nav">
-      </ul>
-    </div>
+  <div class="mdl-layout__drawer">
+    <span class="mdl-layout-title">CarPi Web</span>
+    <nav class="mdl-navigation">
+      <div id="carpi-list-container">
+        <%- linkTo('Home', carpiListsPath, {class: 'mdl-navigation__link'}) %>
+      </div>
+    </nav>
   </div>
-</nav>
-
-<div class="container">
-  <%- render(); %>
+  <main class="mdl-layout__content">
+    <div class="page-content">
+      <%- render(); %>
+    </div>
+  </main>
 </div>
-
 
 <%= partial('layout_footer'); %>

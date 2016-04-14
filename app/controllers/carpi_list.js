@@ -18,7 +18,7 @@
 
 var redis_utils = require('../../lib/redis-utils.js');
 
-var Main = function () {
+var CarpiList = function () {
   this.index = function (req, resp, params) {
     var sub_client = geddy.redis_cli.duplicate();
 
@@ -30,16 +30,16 @@ var Main = function () {
       }, 2000);
 
       sub_client.on("message", function (channel, key) {
-        if(key == 'car-online') redis_utils.emitCarsList(socket);
+        if(key == 'cars-list-refresh') redis_utils.emitCarsList(socket);
       });
       sub_client.subscribe('__keyevent@0__:set');
     });
 
     this.respond({params: params}, {
       format: 'html'
-    , template: 'app/views/main/index'
+    , template: 'app/views/carpi_list/index'
     });
   };
 };
 
-exports.Main = Main;
+exports.CarpiList = CarpiList;

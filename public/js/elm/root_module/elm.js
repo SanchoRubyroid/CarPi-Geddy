@@ -10308,22 +10308,16 @@ Elm.CarPiList.make = function (_elm) {
          return typeof v === "string" || typeof v === "object" && v instanceof String ? v : _U.badPort("a string",v);
       })) : _U.badPort("an array",v);
    });
-   var carsList = function (cars) {
-      var carItem = function (car) {
-         return A2($Html.li,
-         _U.list([$Html$Attributes.$class("list-group-item")]),
-         _U.list([A2($Html.a,_U.list([$Html$Attributes.href(A2($Basics._op["++"],"/control/",car))]),_U.list([$Html.text(car)]))]));
-      };
-      var carItems = A2($List.map,carItem,cars);
-      return A2($Html.ul,_U.list([$Html$Attributes.$class("list-group")]),carItems);
-   };
    var view = F2(function (address,model) {
-      var list = $List.isEmpty(model.cars) ? A2($Html.div,
-      _U.list([$Html$Attributes.$class("panel-body")]),
-      _U.list([A2($Html.p,_U.list([]),_U.list([$Html.text("No cars online")]))])) : carsList(model.cars);
-      return A2($Html.div,
-      _U.list([$Html$Attributes.$class("panel panel-primary")]),
-      _U.list([A2($Html.div,_U.list([$Html$Attributes.$class("panel-heading")]),_U.list([$Html.text("List of cars online")])),list]));
+      var carItem = function (car) {
+         return A2($Html.a,
+         _U.list([$Html$Attributes.$class("mdl-navigation__link"),$Html$Attributes.href(A2($Basics._op["++"],"/control/",car))]),
+         _U.list([$Html.text(car)]));
+      };
+      var list = $List.isEmpty(model.cars) ? _U.list([A2($Html.a,
+      _U.list([$Html$Attributes.$class("mdl-navigation__link"),$Html$Attributes.href("#")]),
+      _U.list([$Html.text("No Vehicles online")]))]) : A2($List.map,carItem,model.cars);
+      return A2($Html.div,_U.list([]),list);
    });
    var update = F2(function (action,model) {
       var _p0 = action;
@@ -10348,7 +10342,6 @@ Elm.CarPiList.make = function (_elm) {
                                   ,SetCarsList: SetCarsList
                                   ,update: update
                                   ,view: view
-                                  ,carsList: carsList
                                   ,inbox: inbox
                                   ,actions: actions
                                   ,model: model

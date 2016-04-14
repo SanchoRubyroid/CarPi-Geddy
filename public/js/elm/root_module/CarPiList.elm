@@ -31,27 +31,15 @@ update action model =
 view : Signal.Address Action -> Model -> Html
 view address model =
   let
+    carItem car =
+      a [ class "mdl-navigation__link", href ("/control/" ++ car) ] [ text car ]
     list =
       if List.isEmpty model.cars then
-        div [ class "panel-body" ] [ p [] [ text "No cars online"] ]
+        [ a [ class "mdl-navigation__link", href "#" ] [ text "No Vehicles online"] ]
       else
-        carsList model.cars
+        List.map carItem model.cars
   in
-    div [ class "panel panel-primary" ]
-      [ (div [ class "panel-heading" ] [ text "List of cars online" ]),
-        list
-      ]
-
-carsList : List String -> Html
-carsList cars =
-  let
-    carItem car =
-      li [ class "list-group-item" ]
-        [ a [ href ("/control/" ++ car) ] [ text car ] ]
-    carItems =
-      List.map carItem cars
-  in
-    ul [ class "list-group" ] carItems
+    div [] list
 
 -- PORTS
 

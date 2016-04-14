@@ -11,10 +11,18 @@
       <%- scriptLink('http://html5shim.googlecode.com/svn/trunk/html5.js', {type:'text/javascript'}) %>
     <![endif]-->
 
+    <!-- <link rel="stylesheet" href="/node_modules/material-design-lite/material.min.css">
+    <script src="/node_modules/material-design-lite/material.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"> -->
+
     <%- scriptLink('jquery.min.js', {type:'text/javascript'}) %>
-    <%- scriptLink('bootstrap.min.js', {type:'text/javascript'}) %>  
+
+    <%- styleLink('material.min.css', {rel:'stylesheet'}) %>
+    <%- scriptLink('material.min.js', {type:'text/javascript'}) %>
+    <%- styleLink('https://fonts.googleapis.com/icon?family=Material+Icons', {rel:'stylesheet'}) %>
+    <!-- <%- scriptLink('bootstrap.min.js', {type:'text/javascript'}) %>
 
     <%- styleLink('bootstrap.min.css', {rel:'stylesheet'}) %>
-    <%- styleLink('bootstrap-theme.min.css', {rel:'stylesheet'}) %>
+    <%- styleLink('bootstrap-theme.min.css', {rel:'stylesheet'}) %> -->
   </head>
   <body>

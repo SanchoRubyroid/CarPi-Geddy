@@ -19,7 +19,7 @@
 
 var router = new geddy.RegExpRouter();
 
-router.get('/').to('Main.index');
+router.get('/').to('CarpiList.index');
 router.get('/control/:id').to('CarpiControl.index');
 
 // Basic routes
