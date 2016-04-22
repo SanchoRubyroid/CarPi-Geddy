@@ -16,23 +16,10 @@
  *
 */
 
-var redis_utils = require('../../lib/redis-utils.js');
-
 var CarpiList = function () {
   this.index = function (req, resp, params) {
-    var sub_client = geddy.redis_cli.duplicate();
-
-    geddy.io.sockets.on('connection', function(socket) {
-      redis_utils.emitCarsList(socket);
-
-      setInterval(function(){
-        redis_utils.emitCarsList(socket);
-      }, 2000);
-
-      sub_client.on("message", function (channel, key) {
-        if(key == 'cars-list-refresh') redis_utils.emitCarsList(socket);
-      });
-      sub_client.subscribe('__keyevent@0__:set');
+    geddy.io.sockets.on('connection', (socket) => {
+      socket.emit('cars-list', geddy.vehicleConnectionUtils.vehicleNames());
     });
 
     this.respond({params: params}, {
