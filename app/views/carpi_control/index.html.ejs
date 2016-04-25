@@ -36,13 +36,35 @@
     var chart = new google.visualization.Gauge(document.getElementById('chart-container'));
 
     elmApp.ports.externalModel.subscribe(function(model){
-      if(!(JSON.stringify(controlModel) === JSON.stringify(model))) {
-        controlModel = model;
+      compressedModel = getCompressedData(model)
+
+      if(!(JSON.stringify(controlModel) === JSON.stringify(compressedModel))) {
+        controlModel = compressedModel;
         socket.emit('car-control', controlModel);
 
-        data.setValue(0, 1, parseInt(controlModel.torqueLevel));
+        data.setValue(0, 1, controlModel[0]);
         chart.draw(data, options);
       }
     });
+  }
+
+  // TODO move to helper
+  function getCompressedData(model){
+    var values = []
+    var stateByte = 0
+
+    var torqueReversedMask = 0b00000100
+    var directionRightMask = 0b00000001
+    var directionLeftMask = 0b00000010
+
+    if(model.torqueReversed) stateByte |= torqueReversedMask
+    if(model.direction > 0) stateByte |= directionRightMask
+    else if (model.direction < 0) stateByte |= directionLeftMask
+
+    values.push(parseInt(model.torqueLevel))
+    values.push(parseInt(model.directionLevel))
+    values.push(stateByte)
+
+    return values
   }
 </script>

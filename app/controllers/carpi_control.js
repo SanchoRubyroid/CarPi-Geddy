@@ -2,8 +2,8 @@ var CarpiControl = function () {
   this.index = function (req, resp, params) {
     geddy.io.sockets.on('connection', function(socket) {
       socket.on('car-control', function(data) {
-        var vehicle_socket = geddy.vehicleConnectionUtils.getSocketByName(params['id'])        
-        vehicle_socket.write(JSON.stringify(data))
+        var vehicle_socket = geddy.vehicleConnectionUtils.getSocketByName(params['id'])
+        vehicle_socket.write(new Buffer(data))
       });
     });
 
